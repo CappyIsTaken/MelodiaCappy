@@ -282,3 +282,6 @@ distube
     )
     .on('searchDone', () => {})
 
+
+client.login(process.env.token)
+
