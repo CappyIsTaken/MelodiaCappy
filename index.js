@@ -14,8 +14,6 @@ const client = new Client({
     intents: myIntents,
 })
 
-const app = express()
-
 // Create a new DisTube
 const distube = new DisTube(client, {
     searchSongs: 5,
@@ -284,17 +282,3 @@ distube
     )
     .on('searchDone', () => {})
 
-
-
-app.get('/', (req, res) => {
-  res.send('Hello Express app!')
-});
-
-
-app.get("/zoo.file", (req,res) => {
-  res.send("<h1>YOUR MOM </h1>")
-})
-
-app.listen(5000, () => {
-  client.login(process.env.token)
-});
