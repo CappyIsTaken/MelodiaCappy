@@ -5,6 +5,7 @@ const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { SpotifyPlugin } = require('@distube/spotify')
 const { YtDlpPlugin } = require("@distube/yt-dlp")
 const fetch = require("node-fetch")
+require("dotenv").config()
 
 
 
@@ -58,6 +59,7 @@ client.on('messageCreate', async message => {
   if(message.content.includes("https://twitter.com") && message.channel.name == "comedi" && !message.content.includes("-wv"))
   {
     let url = message.content.match(/(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/)[2];
+    let additional = message.content.replace(url, "")
     let id = url.split("/status/")[1]
   try{
       let resp = await fetch(`https://cdn.syndication.twimg.com/tweet?id=${id}`)
@@ -69,7 +71,8 @@ client.on('messageCreate', async message => {
         let res2 = b.src.substring(b.src.indexOf("x", 26)+1, b.src.lastIndexOf("/"))
         return parseInt(res2)-parseInt(res1)
       })
-      message.reply(sorted[0].src+"\nVideo has been found!")
+      await message.channel.send(sorted[0].src+`\n[Posted by ${message.author}]\nMessage body: ${additional}`)
+      await message.delete()
     }
   }catch(ex){
       console.log('Fail', ex);
@@ -286,5 +289,5 @@ distube
     .on('searchDone', () => {})
 
 
-client.login(process.env.token)
+client.login(process.env.TOKEN)
 
