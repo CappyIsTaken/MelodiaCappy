@@ -7,12 +7,15 @@ const { YtDlpPlugin } = require("@distube/yt-dlp")
 const fetch = require("node-fetch")
 
 
+
 const myIntents = new Intents();
 myIntents.add(Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES);
 
 const client = new Client({
     intents: myIntents,
 })
+
+
 
 // Create a new DisTube
 const distube = new DisTube(client, {
@@ -52,7 +55,7 @@ function isInBotVC(message) {
 client.on('messageCreate', async message => {
     if (message.author.bot || !message.inGuild()) return
 
-  if(message.content.includes("https://twitter.com" ))
+  if(message.content.includes("https://twitter.com") && message.channel.name == "comedi" && !message.content.includes("-wv"))
   {
     let url = message.content.match(/(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/)[2];
     let id = url.split("/status/")[1]
