@@ -71,7 +71,7 @@ client.on('messageCreate', async message => {
         let res2 = b.src.substring(b.src.indexOf("x", 26)+1, b.src.lastIndexOf("/"))
         return parseInt(res2)-parseInt(res1)
       })
-      await message.channel.send(sorted[0].src+`\n[Posted by ${message.author}]\nMessage body: ${additional}`)
+      await message.channel.send(sorted[0].src+`\n[Posted by ${message.author}]\n${additional.length > 0 ? `Message body: ${additional}` : ``}`)
       await message.delete()
     }
   }catch(ex){
