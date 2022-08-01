@@ -1,5 +1,5 @@
 const express = require('express');
-const {Client, Intents} = require('discord.js')
+const {Client, Intents, Message} = require('discord.js')
 const { DisTube } = require('distube')
 const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { SpotifyPlugin } = require('@distube/spotify')
@@ -43,6 +43,15 @@ client.on('ready', client => {
 
 
 
+function isMentionCommand(message) {
+    return message.content.startsWith("<@"+client.user.id+">")
+}
+
+function getMentionBot() {
+    return "<@"+client.user.id+">"
+}
+
+
 
 
 
@@ -55,8 +64,7 @@ function isInBotVC(message) {
 
 client.on('messageCreate', async message => {
     if (message.author.bot || !message.inGuild()) return
-
-  if(message.content.includes("https://twitter.com") && message.channel.name == "comedi" && !message.content.includes("-wv"))
+  if(isMentionCommand(message) && message.content.includes("https://twitter.com"))
   {
     let url = message.content.match(/(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/)[2];
     let additional = message.content.replace(url, "")
@@ -71,7 +79,7 @@ client.on('messageCreate', async message => {
         let res2 = b.src.substring(b.src.indexOf("x", 26)+1, b.src.lastIndexOf("/"))
         return parseInt(res2)-parseInt(res1)
       })
-      await message.channel.send(sorted[0].src+`\n[Posted by ${message.author}]\n${additional.length > 0 ? `Message body: ${additional}` : ``}`)
+      await message.channel.send(sorted[0].src+`\n[Posted by ${message.author}]`)
       await message.delete()
     }
   }catch(ex){
@@ -79,12 +87,22 @@ client.on('messageCreate', async message => {
   }
     
   }
-    if (!message.content.startsWith(process.env.prefix)) return
-    const args = message.content
+  let args
+  let command
+    if (message.content.startsWith(process.env.prefix)) {
+         args = message.content
         .slice(process.env.prefix.length)
         .trim()
         .split(/ +/g)
-    const command = args.shift()
+          
+    }
+    else if(isMentionCommand(message)) {
+        args = message.content.slice(getMentionBot().length).trim().split(/ +/g)
+    }
+    else {
+        return
+    }
+    command = args.shift() 
 
     if (["play", "p"].includes(command)) {
         const voiceChannel = message.member?.voice?.channel
